@@ -9,41 +9,30 @@ export default function CalHeatmap({ devReadings, metricName, ranges }) {
 
     const [heat, setHeat] = useState(
         {
-            // Some dates to render in the heatmap
-            values: [
-                // { date: shiftDate(today, -3), count: 4 },
-                // { date: shiftDate(today, -7), count: 1 },
-                // { date: shiftDate(today, -14), count: 3 },
-                // { date: shiftDate(today, -45), count: 1 }
-            ],
-
-        });
-
-    const [heat2, setHeat2] = useState(
-        {
-            // Some dates to render in the heatmap
-            values: [
-                // { date: shiftDate(today, -3), count: 4 },
-                // { date: shiftDate(today, -7), count: 1 },
-                // { date: shiftDate(today, -14), count: 3 },
-                // { date: shiftDate(today, -45), count: 1 }
-            ]
+            values: [],
         });
 
     function getCount(val, metricName) {
         if (ranges[metricName]) {
-            if (val <= ranges[metricName]['0']) {
+            console.log("Metric: ",metricName)
+            console.log("Val: ", val)
+            if (val <= Number(ranges[metricName]['range0'])) {
+                console.log("Returned: ",1)
                 return 1;
             }
-            if (val >= ranges[metricName]['1'] && val < ranges[metricName]['2']) {
+            if (val >= Number(ranges[metricName]['range00']) && val < Number(ranges[metricName]['range1'])) {
+                console.log("Returned: ",2)
                 return 2;
             }
-            if (val >= ranges[metricName]['2'] && val < ranges[metricName]['3']) {
+            if (val >= Number(ranges[metricName]['range1']) && val < Number(ranges[metricName]['range2'])) {
+                console.log("Returned: ",3)
                 return 3;
             }
-            if (val >= ranges[metricName]['3'] && val < ranges[metricName]['4']) {
+            if (val >= Number(ranges[metricName]['range2']) && val < Number(ranges[metricName]['range3'])) {
+                console.log("Returned: ",4)
                 return 4;
             }
+            console.log("Returned: ",5)
             return 5;
         }
         if (val < 0.25) {
@@ -62,14 +51,15 @@ export default function CalHeatmap({ devReadings, metricName, ranges }) {
 
     }
 
+
+
     useEffect(() => {
-        console.log(metricName)
 
         if (devReadings !== undefined) {
             let data = [];
             for (let d in devReadings.values) {
 
-                data.push({ date: d, count: getCount(devReadings.values[d], metricName) });
+                data.push({ date: d, count: getCount(devReadings.values[d], metricName), value: devReadings.values[d] });
             }
             setHeat(prev => {
                 return {
@@ -78,8 +68,6 @@ export default function CalHeatmap({ devReadings, metricName, ranges }) {
                 }
             })
         }
-        console.log(heat)
-        // console.log(heat2)
     }, [devReadings])
 
 
@@ -97,11 +85,9 @@ export default function CalHeatmap({ devReadings, metricName, ranges }) {
                     }
                     return `color-github-${value.count}`;
                 }}
-                tooltipDataAttrs={value => {
-
+                tooltipDataAttrs={(el,z) => {
                     return {
-                        'data-tip': value.date ? (`Dia: ${value.date !== null ? value.date.slice(0, 10) : " "}`) : ''
-
+                        'data-tip': el.date ? (`Dia: ${el.date !== null ? el.date.slice(0, 10) : " "} Valor: ${Math.round(el.value)}`) : ''
                     };
 
                 }}
@@ -120,13 +106,4 @@ function shiftDate(date, numDays) {
     return newDate;
 }
 
-function getRange(count) {
-    return Array.from({ length: count }, (_, i) => i);
-}
-
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-const rootElement = document.getElementById('root');
 

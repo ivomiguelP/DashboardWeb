@@ -55,7 +55,7 @@ function DeviceAddForm (props){
         if(!devID){
             alert.error("É necessário indicar DevID");
         }
-        devMgr.registerDevice(devID, devEUI, selectedAttributes, registerResponseSet);        
+        devMgr.registerDevice(devID, devEUI, selectedAttributes.map(el => el.replace(".","_")), registerResponseSet);        
     }
 
 
@@ -69,20 +69,19 @@ function DeviceAddForm (props){
                 <label for="devEuiInput">DevEUI</label>
                 <input type="text" className="form-control" id="devEuiInput" placeholder="DevEUI do dispositivo" value={devEUI} onChange={devEUIChange}></input>
             </div>
-            {/* <div className="form-group">
+            <div className="form-group">
                 <label for="attrInput">Atributos Opcionais</label>
                 <Select
                         isMulti
                         placeholder="Adicione atributos"
                         name="Atributos opcionais"
                         options={attributeOptions}
-                        //value={selectedAttributes}
                         onChange={handleAttributes}
                         className="basic-multi-select"
                         classNamePrefix="select"
                         id="attrInput"
                     />
-            </div> */}
+            </div>
             <div>
                 <button type="button" className="btn btn-dark" onClick={Register}>Registar</button>
                 <button type="button" className="btn btn-secondary" onClick={CloseForm}>Cancelar</button>

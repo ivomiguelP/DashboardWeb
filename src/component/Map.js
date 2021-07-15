@@ -8,7 +8,6 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
@@ -17,7 +16,7 @@ function capitalizeFirstLetter(string) {
 }
 
 function Map({ activeDevices, devMgr, ranges }) {
-
+    
     const [devReadings, setDevReadings] = useState({})
 
     useEffect(() => {
@@ -102,9 +101,9 @@ function Map({ activeDevices, devMgr, ranges }) {
                             <div style={{ width: '501px' }}>
                                 {devReadings && devReadings && devReadings[dev.id] &&
                                 <AppBar position="static">
-                                    <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+                                    <Tabs value={value} onChange={handleChange} variant="scrollable" aria-label="simple tabs example">
                                         {Object.keys(devReadings[dev.id]).map((el,idx) => {
-                                            return <Tab label={el} {...a11yProps(idx)} />
+                                            return <Tab label={el} key={idx} {...a11yProps(idx)} />
                                         })}
                                     </Tabs>
                                 </AppBar>

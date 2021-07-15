@@ -1,26 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import Map from './component/Map'
-import DeviceMenu from './component/DeviceMenu'
-import DeviceAddForm from './component/DeviceAddForm'
-import DeviceRemoveForm from './component/DeviceRemoveForm'
-import DeviceList from './component/DeviceList'
-import deviceMgr from './data/deviceMgr'
-
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
+import Map from './component/Map';
+import DeviceMenu from './component/DeviceMenu';
+import ScaleColorsForm from './component/ScaleColorsForm'
+import DeviceAddForm from './component/DeviceAddForm';
+import DeviceRemoveForm from './component/DeviceRemoveForm';
+import DeviceList from './component/DeviceList';
+import deviceMgr from './data/deviceMgr';
+import scaleColors from './HeatmapColorScale.json'
 
 function App() {
 
   // TODO mudar hardcoded para env.
   const managementApiOptions = {
-    // VM ISEL IP 10.62.73.81
-    // managementApiURI: "http://10.62.73.81:8080/api/",
-    // orionURI:  "http://10.62.73.81:1026/v2/", 
 
     managementApiURI: "http://192.168.1.103:8080/api/",
     orionURI: "http://192.168.1.103:1026/v2/",
@@ -30,6 +22,9 @@ function App() {
     fiwareService: "iotsensor",
     fiwareServicePath: "/"
   }
+
+  const localScaleColors = JSON.parse(localStorage.getItem("ScaleColors"));
+  
 
   const [isShowAddForm, setShowAddForm] = useState(false);
   const [isShowRemoveForm, setShowRemoveForm] = useState(false);
@@ -52,21 +47,9 @@ function App() {
     setShowList(show);
   }
 
-  const [ranges, setRanges]=useState({
-    'PM2.5': {
-      1: 15,
-      2: 30,
-      3: 55,
-      4: 110,
-    }, 
-    'PM10': {
-      1: 25,
-      2: 50,
-      3: 90,
-      4: 180
-    }
-
-  });
+  const [ranges, setRanges]=useState(
+    localScaleColors? localScaleColors : scaleColors.metrics
+  );
 
   useEffect(() => {
     const checkDevices = setInterval(() => {
@@ -87,6 +70,9 @@ function App() {
     <div className="App">
       <div id="device_menu">
         <DeviceMenu showAddForm={showAddForm} showRemoveForm={showRemoveForm} showList={showList} />
+      </div>
+      <div id='scale_button'>
+        <ScaleColorsForm ranges={ranges} setRanges={setRanges}></ScaleColorsForm>
       </div>
       {isShowAddForm && <div className="device_form">
         <DeviceAddForm devMgr={devMgr} setShowForm={setShowAddForm} optionAttributes={optionAttributes} />

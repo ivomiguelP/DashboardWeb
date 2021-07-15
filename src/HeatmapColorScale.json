@@ -1,0 +1,16 @@
+{
+    "metrics":{
+        "PM10":{
+            "range0": 20,
+            "range1": 35,
+            "range2": 50,
+            "range3": 100
+        },
+        "PM2_5":{
+            "range0": 10,
+            "range1": 20,
+            "range2": 25,
+            "range3": 50
+        }
+    }
+}
