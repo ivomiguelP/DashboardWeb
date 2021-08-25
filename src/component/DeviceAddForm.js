@@ -82,9 +82,9 @@ function DeviceAddForm (props){
                         id="attrInput"
                     />
             </div>
-            <div>
-                <button type="button" className="btn btn-dark" onClick={Register}>Registar</button>
+            <div>             
                 <button type="button" className="btn btn-secondary" onClick={CloseForm}>Cancelar</button>
+                <button type="button" className="btn btn-dark" onClick={Register}>Registar</button>
             </div>
         </form>
     );

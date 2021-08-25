@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import Map from './component/Map';
 import DeviceMenu from './component/DeviceMenu';
-import ScaleColorsForm from './component/ScaleColorsForm'
+import MetricColorRangeUpdate from './component/MetricColorRangeUpdate'
 import DeviceAddForm from './component/DeviceAddForm';
 import DeviceRemoveForm from './component/DeviceRemoveForm';
 import DeviceList from './component/DeviceList';
 import deviceMgr from './data/deviceMgr';
+import MetricMgr from './data/MetricMgr'
 import scaleColors from './HeatmapColorScale.json'
+import AddNewMetric from './component/AddNewMetric';
 
 function App() {
 
   // TODO mudar hardcoded para env.
   const managementApiOptions = {
 
-    managementApiURI: "http://192.168.1.103:8080/api/",
+    // managementApiURI: "http://192.168.1.103:8080/api/",
+    managementApiURI: "http://10.0.0.25:8080/api/",
     orionURI: "http://192.168.1.103:1026/v2/",
     sthHost: '192.168.1.103',
     sthPort: "8666",
@@ -23,7 +26,7 @@ function App() {
     fiwareServicePath: "/"
   }
 
-  const localScaleColors = JSON.parse(localStorage.getItem("ScaleColors"));
+  // const localScaleColors = JSON.parse(localStorage.getItem("ScaleColors"));
   
 
   const [isShowAddForm, setShowAddForm] = useState(false);
@@ -32,6 +35,7 @@ function App() {
 
   const [activeDevices, setActiveDevices] = useState([]);
   const devMgr = new deviceMgr(managementApiOptions);
+  const metricMgr = new MetricMgr(managementApiOptions);
 
   const optionAttributes = ["temperature", "relativeHumidity", "PM2.5", "PM10"]
 
@@ -47,9 +51,9 @@ function App() {
     setShowList(show);
   }
 
-  const [ranges, setRanges]=useState(
-    localScaleColors? localScaleColors : scaleColors.metrics
-  );
+  // const [ranges, setRanges]=useState(
+  //   localScaleColors? localScaleColors : scaleColors.metrics
+  // );
 
   useEffect(() => {
     const checkDevices = setInterval(() => {
@@ -72,8 +76,12 @@ function App() {
         <DeviceMenu showAddForm={showAddForm} showRemoveForm={showRemoveForm} showList={showList} />
       </div>
       <div id='scale_button'>
-        <ScaleColorsForm ranges={ranges} setRanges={setRanges}></ScaleColorsForm>
+        <MetricColorRangeUpdate metricMgr={metricMgr} ></MetricColorRangeUpdate>
       </div>
+      <div id='new_metric_button'>
+        <AddNewMetric metricMgr={metricMgr}></AddNewMetric>
+      </div>
+
       {isShowAddForm && <div className="device_form">
         <DeviceAddForm devMgr={devMgr} setShowForm={setShowAddForm} optionAttributes={optionAttributes} />
       </div>}
@@ -83,7 +91,7 @@ function App() {
       {isShowList && <div className="device_form">
         <DeviceList devMgr={devMgr} setShowList={setShowList} />
       </div>}
-      <Map activeDevices={activeDevices} devMgr={devMgr} ranges={ranges} setRanges={setRanges}/>
+      <Map activeDevices={activeDevices} devMgr={devMgr} />
     </div>
   );
 }

@@ -46,8 +46,8 @@ function DeviceAddForm (props){
                 <input type="text" className="form-control" id="devIDinput" placeholder="DevID do dispositivo" onChange={devIDChange}></input>
             </div>
             <div>
-                <button type="button" className="btn btn-dark" onClick={Remove}>Remover</button>
                 <button type="button" className="btn btn-secondary" onClick={CloseForm}>Cancelar</button>
+                <button type="button" className="btn btn-dark" onClick={Remove}>Remover</button>
             </div>
         </form>
     );
