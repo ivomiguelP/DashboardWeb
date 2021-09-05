@@ -8,7 +8,7 @@ import ColorPickerModal from './ColorPickerModal';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useAlert } from 'react-alert'
 
-function AddNewMetric({ metricMgr }) {
+function AddNewMetric({ metricMgr, userData }) {
 
     const defaultColors = ['#1F8F4C', '#F9FF33', '#FFC133', '#FF3333', '#A229C6'];
     const defaultRanges = [10, 20, 30, 50];
@@ -42,6 +42,7 @@ function AddNewMetric({ metricMgr }) {
                     scaleRanges: formRanges
 
                 },
+                userData,
                 () => {
                     alert.success("Métrica Registada.");
                     setSubmitting(false);

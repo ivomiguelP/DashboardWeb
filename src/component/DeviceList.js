@@ -8,9 +8,10 @@ export default function DeviceList(props){
     const alert = useAlert();
 
     const devMgr = props.devMgr;
+    const userData = props.userData;
 
     useEffect( () =>{
-        devMgr.listRegisteredDevices(listResponseSet);
+        devMgr.listRegisteredDevices(userData, listResponseSet);
     },[]);
 
     useEffect( () => {

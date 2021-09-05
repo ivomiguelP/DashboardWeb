@@ -13,13 +13,25 @@ function DeviceAddForm (props){
     const devEuiRegex = /^[0-9a-fA-F]+$/
 
     const devMgr = props.devMgr;
+    const metricMgr = props.metricMgr;
+    const userData = props.userData;
 
     const alert = useAlert();
 
     useEffect( ()=>{
-        props.optionAttributes.map( (option) =>{
-            setAttributeOptions( old => [...old, { value: option, label: option}])
+        metricMgr.getAllMetrics(userData, (resp)=>{
+            if(resp.success){
+                const metricsName = [];
+                resp.data.metrics.map( (option) =>{
+                    metricsName.push({ value: option.metricName, label: option.metricName})
+                    //setAttributeOptions( old => [...old, { value: option.metricName, label: option.metricName}])
+                })
+                setAttributeOptions(metricsName)
+            }
         })
+        // props.optionAttributes.map( (option) =>{
+        //     setAttributeOptions( old => [...old, { value: option, label: option}])
+        // })
     },[]);
 
     useEffect( () => {
@@ -55,7 +67,7 @@ function DeviceAddForm (props){
         if(!devID){
             alert.error("É necessário indicar DevID");
         }
-        devMgr.registerDevice(devID, devEUI, selectedAttributes.map(el => el.replace(".","_")), registerResponseSet);        
+        devMgr.registerDevice(userData, devID, devEUI, selectedAttributes.map(el => el.replace(".","_")), registerResponseSet);        
     }
 
 

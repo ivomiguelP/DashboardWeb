@@ -8,36 +8,49 @@ import DeviceRemoveForm from './component/DeviceRemoveForm';
 import DeviceList from './component/DeviceList';
 import deviceMgr from './data/deviceMgr';
 import MetricMgr from './data/MetricMgr'
-import scaleColors from './HeatmapColorScale.json'
+import UserMgr from './data/UserMgr'
 import AddNewMetric from './component/AddNewMetric';
+import Login from './component/Login';
+import { Button } from '@material-ui/core';
+import managementApiConfigOptions from './config/default.json'
 
 function App() {
 
-  // TODO mudar hardcoded para env.
-  const managementApiOptions = {
-
-    // managementApiURI: "http://192.168.1.103:8080/api/",
-    managementApiURI: "http://10.0.0.25:8080/api/",
-    orionURI: "http://192.168.1.103:1026/v2/",
-    sthHost: '192.168.1.103',
-    sthPort: "8666",
-    deviceType: "LoraDevice",
-    fiwareService: "iotsensor",
-    fiwareServicePath: "/"
+  let managementApiOptions = {};
+  //const managementApiOptions2 = config.get("managementApiOptions");
+  if(process.env.NODE_ENV === "development"){
+    managementApiOptions = managementApiConfigOptions
+  }
+  else{
+    managementApiOptions.appId = process.env.APP_ID || managementApiConfigOptions.appId
+    managementApiOptions.appSecret = process.env.APP_SECRET || managementApiConfigOptions.appSecret
+    managementApiOptions.appNameIDM = process.env.APP_NAME_IDM || managementApiConfigOptions.appNameIDM
+    managementApiOptions.adminRoleName = process.env.ADMIN_ROLE_NAME || managementApiConfigOptions.adminRoleName
+    managementApiOptions.managementApiIp = process.env.MANAGEMENT_API_IP || managementApiConfigOptions.managementApiIp
+    managementApiOptions.managementApiPort = process.env.MANAGEMENT_API_Port || managementApiConfigOptions.managementApiPort
+    managementApiOptions.keyRockIp = process.env.KEYROCK_IP || managementApiConfigOptions.keyRockIp
+    managementApiOptions.keyRockPort = process.env.KEYROCK_Port || managementApiConfigOptions.keyRockPort
+    managementApiOptions.orionIp = process.env.ORION_IP || managementApiConfigOptions.orionIp
+    managementApiOptions.orionPort = process.env.ORION_PORT || managementApiConfigOptions.orionPort
+    managementApiOptions.sthIp = process.env.STH_IP || managementApiConfigOptions.sthIp
+    managementApiOptions.sthPort = process.env.STH_PORT || managementApiConfigOptions.sthPort
+    managementApiOptions.deviceType = process.env.DEVICE_TYPE || managementApiConfigOptions.deviceType
+    managementApiOptions.fiwareService = process.env.FIWARE_SERVICE || managementApiConfigOptions.fiwareService
+    managementApiOptions.fiwareServicePath = process.env.FIWARE_SERVICE_PATH || managementApiConfigOptions.fiwareServicePath
   }
 
-  // const localScaleColors = JSON.parse(localStorage.getItem("ScaleColors"));
-  
 
   const [isShowAddForm, setShowAddForm] = useState(false);
   const [isShowRemoveForm, setShowRemoveForm] = useState(false);
   const [isShowList, setShowList] = useState(false);
+  const [userData, setUserData] = useState({});
+  const [searching, setSearching] = useState(false);
+  const [intervalSearchingID, setIntervalSearchingId] = useState();
 
   const [activeDevices, setActiveDevices] = useState([]);
   const devMgr = new deviceMgr(managementApiOptions);
   const metricMgr = new MetricMgr(managementApiOptions);
-
-  const optionAttributes = ["temperature", "relativeHumidity", "PM2.5", "PM10"]
+  const userMgr = new UserMgr(managementApiOptions);
 
   const showAddForm = (show) => {
     setShowAddForm(show);
@@ -51,49 +64,124 @@ function App() {
     setShowList(show);
   }
 
-  // const [ranges, setRanges]=useState(
-  //   localScaleColors? localScaleColors : scaleColors.metrics
-  // );
+  const logout = () => {
+    sessionStorage.removeItem('userData');
+    clearInterval(intervalSearchingID);
+    setIntervalSearchingId(undefined);
+    setSearching(false);
+    setUserData({});
+  }
+
+  const saveUserData = (key, value) => {
+    setUserData(prev => {
+      return { ...prev, [key]: value }
+    });
+    let data = userData;
+    data[key] = value;
+    sessionStorage.setItem('userData', JSON.stringify(data));
+  }
 
   useEffect(() => {
-    const checkDevices = setInterval(() => {
-      devMgr.listActiveDevices()
-        .then(res => {
-          if (res) {
-            setActiveDevices(res);
-          }
-
-        })
-        .catch(res => {
-          console.log("Error");
-        })
-    }, 5000)
+    if (isEmpty(userData)) {
+      let t = JSON.parse(sessionStorage.getItem('userData'));
+      if (t) {
+        setUserData(t);
+      }
+    }
   }, [])
 
-  return (
-    <div className="App">
-      <div id="device_menu">
-        <DeviceMenu showAddForm={showAddForm} showRemoveForm={showRemoveForm} showList={showList} />
-      </div>
-      <div id='scale_button'>
-        <MetricColorRangeUpdate metricMgr={metricMgr} ></MetricColorRangeUpdate>
-      </div>
-      <div id='new_metric_button'>
-        <AddNewMetric metricMgr={metricMgr}></AddNewMetric>
-      </div>
 
-      {isShowAddForm && <div className="device_form">
-        <DeviceAddForm devMgr={devMgr} setShowForm={setShowAddForm} optionAttributes={optionAttributes} />
-      </div>}
-      {isShowRemoveForm && <div className="device_form">
-        <DeviceRemoveForm devMgr={devMgr} setShowForm={setShowRemoveForm} />
-      </div>}
-      {isShowList && <div className="device_form">
-        <DeviceList devMgr={devMgr} setShowList={setShowList} />
-      </div>}
-      <Map activeDevices={activeDevices} devMgr={devMgr} />
+  useEffect(() => {
+    if (userData.token && !userData.id) {
+      userMgr.getUserId(
+        userData.token,
+        (id) => {
+          saveUserData('id', id);
+        }
+      )
+    }
+    if (userData.token && !userData.appId) {
+      userMgr.getAppIdInIDM(
+        userData.token,
+        (appId) => {
+          saveUserData('appId', appId);
+        })
+    }
+
+    if (userData.token && userData.id && userData.appId && !userData.roleAdminId) {
+      userMgr.getRoleAdminId(
+        userData,
+        (roleAdminId) => {
+          saveUserData('roleAdminId', roleAdminId);
+        }
+      )
+    }
+
+    if (userData.token && userData.id && userData.appId && userData.roleAdminId && userData.isAdmin === undefined) {
+      userMgr.isUserAdmin(
+        userData,
+        (isAdmin) => {
+          saveUserData('isAdmin', isAdmin);
+        }
+      )
+    }
+    if (!searching && userData.accessToken) {
+      const interId =setInterval(() => {
+        devMgr.listActiveDevices(userData)
+          .then(res => {
+            if (res) {
+              setActiveDevices(res);
+            }
+  
+          })
+          .catch(res => {
+            console.log("Error");
+          })
+      }, 5000)
+      setIntervalSearchingId(interId);
+      setSearching(true);
+    }
+  }, [userData, searching]);
+
+  return (
+    <div>
+      {userData.token &&
+        <div className="App">
+          <div id="device_menu">
+            <DeviceMenu showAddForm={showAddForm} showRemoveForm={showRemoveForm} showList={showList} />
+          </div>
+          {userData.isAdmin &&
+            <div>
+              <div id='scale_button'>
+                <MetricColorRangeUpdate metricMgr={metricMgr} userData={userData}></MetricColorRangeUpdate>
+              </div>
+              <div id='new_metric_button'>
+                <AddNewMetric metricMgr={metricMgr} userData={userData}></AddNewMetric>
+              </div>
+            </div>
+          }
+          {console.log(userData)}
+          {isShowAddForm && <div className="device_form">
+            <DeviceAddForm devMgr={devMgr} metricMgr={metricMgr} userData={userData} setShowForm={setShowAddForm} />
+          </div>}
+          {isShowRemoveForm && <div className="device_form">
+            <DeviceRemoveForm devMgr={devMgr} userData={userData} setShowForm={setShowRemoveForm} />
+          </div>}
+          {isShowList && <div className="device_form">
+            <DeviceList devMgr={devMgr} userData={userData} setShowList={setShowList} />
+          </div>}
+          <Button id='logout-button' variant="contained" color="primary" onClick={logout}>Logout</Button>
+          <Map activeDevices={activeDevices} devMgr={devMgr} metricMgr={metricMgr} userData={userData} />
+
+        </div>
+      }
+      {!userData.token && <Login userMgr={userMgr} setToken={(token) => saveUserData('token', token)} setAccessToken={(accessT) => saveUserData('accessToken', accessT)} />}
     </div>
   );
+}
+
+const isEmpty = (obj) => {
+  return !(obj && Object.keys(obj).length === 0)
 }
 
 export default App;

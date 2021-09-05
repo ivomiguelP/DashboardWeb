@@ -6,8 +6,10 @@ class deviceMgr {
         this.managementApiOptions = managementApiOptions;
     }
 
+    // managementApiOptions.managementApiIp = process.env.MANAGEMENT_API_IP || managementApiConfigOptions.managementApiIp
+    // managementApiOptions.managementApiPort = process.env.MANAGEMENT_API_Port || managementApiConfigOptions.managementApiPort
 
-    registerDevice(devId, devEui, optAttrib, responseSet) {
+    registerDevice(userData, devId, devEui, optAttrib, responseSet) {
         if (!devId) {
             return responseSet({ success: false, msg: "DevID não foi indicado." });
         }
@@ -18,7 +20,7 @@ class deviceMgr {
             }
             )
         axios.post(
-            this.managementApiOptions.managementApiURI + "registerdevice",
+            `http://${this.managementApiOptions.managementApiIp}:${this.managementApiOptions.managementApiPort}/api/registerdevice`,
             {
                 devID: devId,
                 devEui: devEui,
@@ -26,7 +28,8 @@ class deviceMgr {
             },
             {
                 headers: {
-                    'content-type': 'application/json'
+                    'content-type': 'application/json',
+                    'Authorization': `Bearer ${userData.accessToken}`
                 }
             }
         ).then((res) => {
@@ -38,18 +41,19 @@ class deviceMgr {
         });
     }
 
-    unregisterDevice(devId, responseSet) {
+    unregisterDevice(userData, devId, responseSet) {
         if (!devId) {
             return responseSet({ success: false, msg: "DevID não foi indicado." });
         }
         axios.post(
-            this.managementApiOptions.managementApiURI + "unregisterdevice",
+            `http://${this.managementApiOptions.managementApiIp}:${this.managementApiOptions.managementApiPort}/api/unregisterdevice`,
             {
                 devID: devId
             },
             {
                 headers: {
-                    'content-type': 'application/json'
+                    'content-type': 'application/json',
+                    'Authorization': `Bearer ${userData.accessToken}`
                 }
             }
         ).then((res) => {
@@ -61,9 +65,11 @@ class deviceMgr {
         });
     }
 
-    listRegisteredDevices(responseSet) {
+    listRegisteredDevices(userData, responseSet) {
         axios.get(
-            this.managementApiOptions.managementApiURI + "devices"
+            `http://${this.managementApiOptions.managementApiIp}:${this.managementApiOptions.managementApiPort}/api/unregisterdevice`,
+            this.managementApiOptions.managementApiURI + "devices",{headers:{
+                'Authorization': `Bearer ${userData.accessToken}`}}
         )
             .then((res) => {
                 let devices = [];
@@ -79,13 +85,14 @@ class deviceMgr {
             });
     }
 
-    async listActiveDevices() {
-
-        let res = await axios.get(this.managementApiOptions.orionURI + "entities/",
+    async listActiveDevices(userData) {
+        //await axios.get(this.managementApiOptions.orionURI + "entities/",
+        let res = await axios.get(`http://${this.managementApiOptions.orionIp}:${this.managementApiOptions.orionPort}/v2/entities/`,
             {
                 headers: {
                     "fiware-service": this.managementApiOptions.fiwareService,
-                    "fiware-servicepath": this.managementApiOptions.fiwareServicePath
+                    "fiware-servicepath": this.managementApiOptions.fiwareServicePath,
+                    'Authorization': `Bearer ${userData.accessToken}`
                 },
                 params: {
                     type: this.managementApiOptions.deviceType
@@ -94,11 +101,12 @@ class deviceMgr {
         return res.data;
     }
 
-    async GetLastMonthMaxReadings(deviceName, attributeName, beginDate, endDate, resolution, aggregationType) {
+    async GetLastMonthMaxReadings(userData, deviceName, attributeName, beginDate, endDate, resolution, aggregationType) {
         const url = `http://${this.managementApiOptions.sthHost}:${this.managementApiOptions.sthPort}/STH/v1/contextEntities/type/LoraDevice/id/${deviceName}/attributes/${attributeName}`;
         const headers = {
             "fiware-service": this.managementApiOptions.fiwareService,
-            "fiware-servicepath": this.managementApiOptions.fiwareServicePath
+            "fiware-servicepath": this.managementApiOptions.fiwareServicePath,
+            'Authorization': `Bearer ${userData.accessToken}`
         };
         const parameters = {
             aggrMethod: aggregationType,

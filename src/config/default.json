@@ -1,0 +1,17 @@
+{
+    "appId": "dafeca28-23ec-4d78-bb58-7723b409f7c4",
+    "appSecret": "7bad3d6b-2bfc-45ef-a305-62320e3a476f",
+    "appNameIDM": "DataAccessApp",
+    "adminRoleName": "AdminRole",
+    "managementApiIp": "10.0.0.25", 
+    "managementApiPort": "8080",
+    "keyRockIp": "10.0.0.25", 
+    "keyRockPort": "3005",
+    "orionIp": "10.0.0.25",
+    "orionPort": "1027",
+    "sthHost": "10.0.0.25",
+    "sthPort": "8667",
+    "deviceType": "LoraDevice",
+    "fiwareService": "iotsensor",
+    "fiwareServicePath": "/"
+}

@@ -6,7 +6,7 @@ import Select from 'react-select';
 import ColorPickerModal from './ColorPickerModal';
 import ScaleColorMetricFormField from './ScaleColorMetricFormField'
 
-function MetricColorRangeUpdate({ metricMgr }) {
+function MetricColorRangeUpdate({ metricMgr, userData }) {
 
     const alert = useAlert();
 
@@ -27,7 +27,7 @@ function MetricColorRangeUpdate({ metricMgr }) {
 
 
     useEffect(() => {
-        metricMgr.getAllMetrics((res => {
+        metricMgr.getAllMetrics(userData,(res => {
             setMetrics(res.data.metrics);
             let options = res.data.metrics.map((el, idx) => {
                 return { label: el.metricName, value: idx }
@@ -52,6 +52,7 @@ function MetricColorRangeUpdate({ metricMgr }) {
 
     const saveRanges = () => {
         metricMgr.updateMetric({metricName:selectedMetric.metricName, scaleColors: [...selectedColors], scaleRanges: [...selectedRanges] },
+            userData,
             () =>{
                 alert.success("Valores salvos.");
                 let mCpy = metrics.map((el)=>{

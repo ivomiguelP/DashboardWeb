@@ -10,14 +10,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import Icon from '@material-ui/core/Icon';
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function Map({ activeDevices, devMgr, ranges }) {
+function Map({ activeDevices, devMgr, metricMgr, ranges, userData }) {
     
     const [devReadings, setDevReadings] = useState({})
+    const [metrics, setMetrics] = useState([]);
+
+    useEffect(()=>{
+        metricMgr.getAllMetrics(
+            userData,
+            (val) =>{
+                setMetrics(val.data.metrics);
+            }
+            )
+    },[])
 
     useEffect(() => {
         if (activeDevices) {
@@ -28,7 +39,7 @@ function Map({ activeDevices, devMgr, ranges }) {
                 const keys = Object.keys(el);
                 keys.forEach(elK => {
                     if (el[elK].type && el[elK].type === 'Number') {
-                        devMgr.GetLastMonthMaxReadings(el.id, elK, dateBegin, dateNow, 'day', 'max')
+                        devMgr.GetLastMonthMaxReadings(userData, el.id, elK, dateBegin, dateNow, 'day', 'max')
                             .then(resp => {
                                 if (resp && Object.keys(resp).length > 0 && resp.constructor === Object) {
                                     const devId = el.id;
@@ -59,13 +70,15 @@ function Map({ activeDevices, devMgr, ranges }) {
     });
 
     let gren_marker = L.icon({
-        iconUrl: 'green-marker.png'
+        iconUrl: 'green_marker.png'
     });
 
     const [value, setValue] = useState(0);
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    //
 
     return (
         <>
@@ -78,12 +91,13 @@ function Map({ activeDevices, devMgr, ranges }) {
 
                 {activeDevices && activeDevices.map(dev => {
                     let pos = dev.location.value.split(",");
-
                     const keys = Object.keys(dev);
+                    let timeVal;
                     let showValues = keys.map(el => {
                         if (dev[el].value) {
                             if (el === 'TimeInstant') {
                                 const fullDateTxt = dev[el].value.toString();
+                                timeVal = new Date(fullDateTxt);
                                 const date = fullDateTxt.substr(0, 10);
                                 const time = fullDateTxt.substr(11, 5);
                                 return <h7><b>Data:</b> {date} {time}</h7>
@@ -96,10 +110,11 @@ function Map({ activeDevices, devMgr, ranges }) {
                         }
 
                     }).filter(el => el);
-                    return <Marker key={dev.id} position={pos} icon={red_marker}>
+                    const useGreenMarker = DiffDateNow(timeVal);
+                    return <Marker key={dev.id} position={pos} icon={useGreenMarker === 0 ? gren_marker: red_marker}>
                         <Popup style={{ width: '501px' }}>
                             <div style={{ width: '501px' }}>
-                                {devReadings && devReadings && devReadings[dev.id] &&
+                                {devReadings && devReadings[dev.id] &&
                                 <AppBar position="static">
                                     <Tabs value={value} onChange={handleChange} variant="scrollable" aria-label="simple tabs example">
                                         {Object.keys(devReadings[dev.id]).map((el,idx) => {
@@ -110,7 +125,7 @@ function Map({ activeDevices, devMgr, ranges }) {
                                 }
                                 {devReadings && devReadings[dev.id] && Object.keys(devReadings[dev.id]).map((el,idx) => {
                                     return <TabPanel value={value} index={idx}>
-                                        <CalHeatmap metricName={el} devReadings={devReadings[dev.id][el]} ranges={ranges} />
+                                        <CalHeatmap metricName={el} devReadings={devReadings[dev.id][el]} metrics={metrics} />
                                     </TabPanel>
 
                                 })}
@@ -163,3 +178,11 @@ function TabPanel(props) {
     index: PropTypes.any.isRequired,
     value: PropTypes.any.isRequired,
   };
+
+function DiffDateNow(date){
+    const now = new Date()
+    const dateD = new Date(date)
+    const diffTime = Math.abs(now - dateD);
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) - 1;
+     
+}

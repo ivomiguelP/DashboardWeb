@@ -6,7 +6,7 @@ class MetricMgr {
         this.managementApiOptions = managementApiOptions;
     }
 
-    updateMetric(metricData, success, error) {
+    updateMetric(metricData, userData, success, error) {
         let data = JSON.stringify(
             {
                 metricData: {
@@ -17,9 +17,10 @@ class MetricMgr {
             });
         let config = {
             method: 'post',
-            url: this.managementApiOptions.managementApiURI + "updatemetric",
+            url: `http://${this.managementApiOptions.managementApiIp}:${this.managementApiOptions.managementApiPort}/api/updatemetric`, 
             headers: {
-                'content-type': 'application/json'
+                'content-type': 'application/json',
+                'Authorization': `Bearer ${userData.accessToken}`
             },
             data: data
         }
@@ -33,9 +34,11 @@ class MetricMgr {
             });
     }
 
-    getMetricRanges(metric, responseSet) {
+    getMetricRanges(userData, metric, responseSet) {
         axios.get(
-            this.managementApiOptions.managementApiURI + "colorchart", { metric: metric }
+            `http://${this.managementApiOptions.managementApiIp}:${this.managementApiOptions.managementApiPort}/api/colorchart`, { metric: metric,headers: {
+                'Authorization': `Bearer ${userData.accessToken}`
+            } }
         )
             .then((res) => {
                 responseSet({ success: true, data: 'ass' })
@@ -45,9 +48,13 @@ class MetricMgr {
             });
     }
 
-    getAllMetrics(responseSet) {
+    getAllMetrics(userData, responseSet) {
         axios.get(
-            this.managementApiOptions.managementApiURI + "getallmetrics"
+            `http://${this.managementApiOptions.managementApiIp}:${this.managementApiOptions.managementApiPort}/api/getallmetrics`, {
+                headers: {
+                    'Authorization': `Bearer ${userData.accessToken}`
+                }
+              }
         )
             .then((res) => {
                 responseSet({ success: true, data: res.data })
@@ -57,7 +64,7 @@ class MetricMgr {
             });
     }
 
-    saveNewMetric(metricData, success, error) {
+    saveNewMetric(metricData,userData, success, error) {
         
         let data = JSON.stringify(
             {
@@ -69,9 +76,10 @@ class MetricMgr {
             });
         let config = {
             method: 'post',
-            url: this.managementApiOptions.managementApiURI + "addmetric",
+            url:`http://${this.managementApiOptions.managementApiIp}:${this.managementApiOptions.managementApiPort}/api/addmetric`,
             headers: {
-                'content-type': 'application/json'
+                'content-type': 'application/json',
+                'Authorization': `Bearer ${userData.accessToken}`
             },
             data: data
         }

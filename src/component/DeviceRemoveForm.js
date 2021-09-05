@@ -7,6 +7,7 @@ function DeviceAddForm (props){
     const [removeResponse, removeResponseSet] = useState(null);
 
     const devMgr = props.devMgr;
+    const userData = props.userData;
 
     const alert = useAlert();
 
@@ -35,7 +36,7 @@ function DeviceAddForm (props){
         if(!devID){
             alert.error("É necessário indicar DevID");
         }
-        devMgr.unregisterDevice(devID, removeResponseSet);        
+        devMgr.unregisterDevice(userData, devID, removeResponseSet);        
     }
 
 
