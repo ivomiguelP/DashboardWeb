@@ -31,8 +31,11 @@ class UserMgr {
     axios(config)
       .then(function (response) {
         responseSet({ success: true, token: response.headers['x-subject-token'] })
+        console.info("Login Success");
       })
       .catch(function (error) {
+        console.info("Login Failed");
+        console.info(error);
         responseSet({ success: false, errorMsg: 'Erro' })
       });
   }

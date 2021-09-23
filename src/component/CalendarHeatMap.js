@@ -1,22 +1,11 @@
-import CalendarHeatmap from 'react-calendar-heatmap';
 import HeatMap from 'react-heatmap-grid'
 import { useEffect, useState } from 'react';
-import ReactTooltip from 'react-tooltip';
-import { array } from 'yup/lib/locale';
+
 
 export default function CalHeatmap({ devReadings, metricName, metrics }) {
 
     const today = new Date();
-    //const beginDate = shiftDate(today, -30);
     const [data, setData] = useState(undefined)
-
-    // useEffect(()=>{
-    //     let d =[]
-    //     for (let i = 0; i < 5; i++) {
-    //         d.push(new Array(7).fill('-'))
-    //       }
-    //       setData(d)
-    // },[])
 
     useEffect(() => {
         if (data === undefined) {

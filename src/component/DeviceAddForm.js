@@ -1,7 +1,6 @@
 import Select from 'react-select';
 import React, { useState, useEffect } from 'react';
 import { useAlert } from 'react-alert'
-import deviceMgr from '../data/deviceMgr'
 
 function DeviceAddForm (props){
 

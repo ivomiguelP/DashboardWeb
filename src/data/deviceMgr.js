@@ -75,7 +75,7 @@ class deviceMgr {
                 let devices = [];
                 res.data.devicesIotAgent.map(
                     (dev) => {
-                        devices.push(dev.device_id)
+                        return devices.push(dev.device_id)
                     })
 
                 responseSet({ success: true, data: devices })
@@ -124,7 +124,6 @@ class deviceMgr {
             );
             let results = {}
             if (res.data.contextResponses) {
-                const dd = res.data.contextResponses[0].contextElement.attributes[0].values;
                 res.data.contextResponses[0].contextElement.attributes[0].values.forEach(el => {
                     const origin = new Date(el._id.origin);
                     let key = new Date();

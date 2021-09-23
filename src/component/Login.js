@@ -14,19 +14,15 @@ import { green } from '@material-ui/core/colors';
 
 export default function Login({ userMgr, setToken, setAccessToken }) {
 
-    // const { userMgr } = useApiAccess();
-
     const [showMessage, setShowMessage] = useState(false);
     const [message, setMessage] = useState("Erro!!!")
-    const [messageTypeError, setMessageTypeError] = useState(true);
+    //const [messageTypeError, setMessageTypeError] = useState(true);
     const [loading, setLoading] = useState(false);
 
     const initialValues = {
         email: '',
         password: ''
     }
-
-    // userMgr.loginUser('admin@test.com', '1234', (m) => {console.log(m)})
 
     const validationSchema = Yup.object().shape({
         email: Yup.string().email('Formato de email inválido').required('Obrigatório'),
@@ -43,8 +39,7 @@ export default function Login({ userMgr, setToken, setAccessToken }) {
                 return;
             }
             setMessage("Login Inválido!");
-
-            setMessageTypeError(true);
+            //setMessageTypeError(true);
             setShowMessage(true);
             setLoading(false);
         });

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAlert } from 'react-alert'
 import Button from '@material-ui/core/Button';
-import Box from '@material-ui/core/Box';
 import Select from 'react-select';
 import ColorPickerModal from './ColorPickerModal';
 import ScaleColorMetricFormField from './ScaleColorMetricFormField'
