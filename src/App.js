@@ -10,6 +10,7 @@ import deviceMgr from './data/deviceMgr';
 import MetricMgr from './data/MetricMgr'
 import UserMgr from './data/UserMgr'
 import AddNewMetric from './component/AddNewMetric';
+import AddDeviceType from './component/AddDeviceType';
 import Login from './component/Login';
 import { Button } from '@material-ui/core';
 import managementApiConfigOptions from './config/default.json'
@@ -18,10 +19,10 @@ function App() {
 
   let managementApiOptions = {};
   //const managementApiOptions2 = config.get("managementApiOptions");
-  if(process.env.NODE_ENV === "development"){
+  if (process.env.NODE_ENV === "development") {
     managementApiOptions = managementApiConfigOptions
   }
-  else{
+  else {
     managementApiOptions.appId = process.env.APP_ID || managementApiConfigOptions.appId
     managementApiOptions.appSecret = process.env.APP_SECRET || managementApiConfigOptions.appSecret
     managementApiOptions.appNameIDM = process.env.APP_NAME_IDM || managementApiConfigOptions.appNameIDM
@@ -126,13 +127,13 @@ function App() {
       )
     }
     if (!searching && userData.accessToken) {
-      const interId =setInterval(() => {
+      const interId = setInterval(() => {
         devMgr.listActiveDevices(userData)
           .then(res => {
             if (res) {
               setActiveDevices(res);
             }
-  
+
           })
           .catch(res => {
             console.log("Error");
@@ -157,6 +158,9 @@ function App() {
               </div>
               <div id='new_metric_button'>
                 <AddNewMetric metricMgr={metricMgr} userData={userData}></AddNewMetric>
+              </div>
+              <div id='new_device_type_button'>
+                <AddDeviceType metricMgr={metricMgr} userData={userData} />
               </div>
             </div>
           }

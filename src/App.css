@@ -34,7 +34,17 @@ div #scale_button{
 div #new_metric_button{
   position: absolute;
   margin-top: 10px;
-  margin-left: 370px;
+  margin-left: 335px;
+  background-color: white;
+  border-radius: 25px;
+  border: 2px solid black;
+  z-index: 9;
+}
+
+div #new_device_type_button{
+  position: absolute;
+  margin-top: 10px;
+  margin-left: 515px;
   background-color: white;
   border-radius: 25px;
   border: 2px solid black;

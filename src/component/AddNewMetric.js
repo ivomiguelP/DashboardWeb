@@ -82,14 +82,6 @@ function AddNewMetric({ metricMgr, userData }) {
         }
     }
 
-    // const UpdateColor = (colorIdx, color) => {
-    //     let colors = [...scaleColors];
-    //     colors[colorIdx] = color;
-    //     setScaleColors(prev => ([...colors]))
-    // }
-
-
-
     return (
         <div>
             <Button aria-controls="device-menu" aria-haspopup="true" onClick={handleClick}>

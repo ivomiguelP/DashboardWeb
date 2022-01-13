@@ -93,6 +93,50 @@ class MetricMgr {
             });
     }
 
+    registerDevType(userData, devTypeName, metricsNames, registerResponseSet){
+        let data = JSON.stringify(
+            {
+                devTypeData: {
+                    devTypeName: devTypeName,
+                    metricNames: metricsNames,
+                }
+            });
+        let config = {
+            method: 'post',
+            url:`http://${this.managementApiOptions.managementApiIp}:${this.managementApiOptions.managementApiPort}/api/adddevtype`,
+            headers: {
+                'content-type': 'application/json',
+                'Authorization': `Bearer ${userData.accessToken}`
+            },
+            data: data
+        }
+        console.log(config);
+        axios(config)
+            .then((res) => {
+                registerResponseSet({success:true})
+                console.log("Dev Type Registered")
+            }).catch(er => {
+                registerResponseSet({success:false, msg: er.message})
+                console.log("Dev Type Register error")
+            });
+    }
+
+    getAllDevTypes(userData,responseSet){
+        axios.get(
+            `http://${this.managementApiOptions.managementApiIp}:${this.managementApiOptions.managementApiPort}/api/getalldevtype`, {
+                headers: {
+                    'Authorization': `Bearer ${userData.accessToken}`
+                }
+              }
+        )
+            .then((res) => {
+                responseSet({ success: true, data: res.data })
+            }).catch(error => {
+                responseSet({ success: false, msg: error })
+                console.log(error)
+            });
+    }
+
 }
 
 export default MetricMgr;
