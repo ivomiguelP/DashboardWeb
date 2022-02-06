@@ -1,6 +1,6 @@
 {
-    "appId": "dafeca28-23ec-4d78-bb58-7723b409f7c4",
-    "appSecret": "7bad3d6b-2bfc-45ef-a305-62320e3a476f",
+    "appId": "626f5f8f-45fa-4f63-a7c9-231d5fa7bb43",
+    "appSecret": "3a6b0cbb-0f7c-42e9-8934-20c56b040d6f",
     "appNameIDM": "DataAccessApp",
     "adminRoleName": "AdminRole",
     "managementApiIp": "192.168.1.103", 

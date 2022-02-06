@@ -21,12 +21,10 @@ function App() {
   //const managementApiOptions2 = config.get("managementApiOptions");
   if (process.env.NODE_ENV === "development") {
     managementApiOptions = managementApiConfigOptions
-    console.log("In Develop Mode");
+    console.log("In Development Mode.");
   }
   else {
-    console.log("In Production Mode");
-    console.log(process.env.APP_ID);
-    console.log(process.env.APP_SECRET);
+    console.log("In Production Mode.");
     managementApiOptions.appId = process.env.APP_ID || managementApiConfigOptions.appId
     managementApiOptions.appSecret = process.env.APP_SECRET || managementApiConfigOptions.appSecret
     managementApiOptions.appNameIDM = process.env.APP_NAME_IDM || managementApiConfigOptions.appNameIDM
@@ -34,7 +32,7 @@ function App() {
     managementApiOptions.managementApiIp = process.env.MANAGEMENT_API_IP || managementApiConfigOptions.managementApiIp
     managementApiOptions.managementApiPort = process.env.MANAGEMENT_API_Port || managementApiConfigOptions.managementApiPort
     managementApiOptions.keyRockIp = process.env.KEYROCK_IP || managementApiConfigOptions.keyRockIp
-    managementApiOptions.keyRockPort = process.env.KEYROCK_Port || managementApiConfigOptions.keyRockPort
+    managementApiOptions.keyRockPort = process.env.KEYROCK_PORT || managementApiConfigOptions.keyRockPort
     managementApiOptions.orionIp = process.env.ORION_IP || managementApiConfigOptions.orionIp
     managementApiOptions.orionPort = process.env.ORION_PORT || managementApiConfigOptions.orionPort
     managementApiOptions.sthIp = process.env.STH_IP || managementApiConfigOptions.sthIp
@@ -42,6 +40,7 @@ function App() {
     managementApiOptions.deviceType = process.env.DEVICE_TYPE || managementApiConfigOptions.deviceType
     managementApiOptions.fiwareService = process.env.FIWARE_SERVICE || managementApiConfigOptions.fiwareService
     managementApiOptions.fiwareServicePath = process.env.FIWARE_SERVICE_PATH || managementApiConfigOptions.fiwareServicePath
+    console.log(process.env.MANAGEMENT_API_IP);
   }
 
 
