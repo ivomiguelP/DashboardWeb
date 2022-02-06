@@ -21,11 +21,11 @@ function App() {
   //const managementApiOptions2 = config.get("managementApiOptions");
   if (process.env.NODE_ENV === "development") {
     managementApiOptions = managementApiConfigOptions
-    console.log("In Development Mode.");
+    console.log("In Development Mode.!!!");
     console.log(window._env_.MANAGEMENT_API_IP);
   }
   else {
-    console.log("In Production Mode.");
+    console.log("In Production Mode.!!!");
     managementApiOptions.appId = process.env.APP_ID || managementApiConfigOptions.appId
     managementApiOptions.appSecret = process.env.APP_SECRET || managementApiConfigOptions.appSecret
     managementApiOptions.appNameIDM = process.env.APP_NAME_IDM || managementApiConfigOptions.appNameIDM
