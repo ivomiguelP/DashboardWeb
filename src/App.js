@@ -31,7 +31,7 @@ function App() {
     managementApiOptions.appNameIDM = process.env.APP_NAME_IDM || managementApiConfigOptions.appNameIDM
     managementApiOptions.adminRoleName = process.env.ADMIN_ROLE_NAME || managementApiConfigOptions.adminRoleName
     managementApiOptions.managementApiIp = process.env.MANAGEMENT_API_IP || managementApiConfigOptions.managementApiIp
-    managementApiOptions.managementApiPort = process.env.MANAGEMENT_API_Port || managementApiConfigOptions.managementApiPort
+    managementApiOptions.managementApiPort = process.env.MANAGEMENT_API_PORT || managementApiConfigOptions.managementApiPort
     managementApiOptions.keyRockIp = process.env.KEYROCK_IP || managementApiConfigOptions.keyRockIp
     managementApiOptions.keyRockPort = process.env.KEYROCK_PORT || managementApiConfigOptions.keyRockPort
     managementApiOptions.orionIp = process.env.ORION_IP || managementApiConfigOptions.orionIp

@@ -7,6 +7,9 @@ touch ./env-config.js
 # Add assignment 
 echo "window._env_ = { \
  PORT:$PORT,\
+ APP_ID: $APP_ID, \
+ APP_SECRET: $APP_SECRET, \
+ APP_NAME_IDM: $APP_NAME_IDM, \
  ADMIN_ROLE_NAME: $ADMIN_ROLE_NAME, \
  DEVICE_TYPE: $DEVICE_TYPE, \
  MANAGEMENT_API_IP: $MANAGEMENT_API_IP, \
@@ -20,3 +23,12 @@ echo "window._env_ = { \
  FIWARE_SERVICE: $FIWARE_SERVICE, \
  FIWARE_SERVICE_PATH: $FIWARE_SERVICE_PATH }  " >> ./env-config.js
  
+
+
+
+
+
+
+
+    managementApiOptions.deviceType = process.env.DEVICE_TYPE || managementApiConfigOptions.deviceType
+
