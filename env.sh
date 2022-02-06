@@ -23,12 +23,3 @@ echo "window._env_ = { \
  FIWARE_SERVICE: $FIWARE_SERVICE, \
  FIWARE_SERVICE_PATH: $FIWARE_SERVICE_PATH }  " >> ./env-config.js
  
-
-
-
-
-
-
-
-    managementApiOptions.deviceType = process.env.DEVICE_TYPE || managementApiConfigOptions.deviceType
-
