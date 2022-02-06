@@ -22,6 +22,7 @@ function App() {
   if (process.env.NODE_ENV === "development") {
     managementApiOptions = managementApiConfigOptions
     console.log("In Development Mode.");
+    console.log(window._env_.MANAGEMENT_API_IP);
   }
   else {
     console.log("In Production Mode.");
